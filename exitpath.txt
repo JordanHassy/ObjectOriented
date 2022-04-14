@@ -1,0 +1,9 @@
+EEESSEEEEEESSWSWWNWWWWSSSSSEENNEEEEE
+
+try a new method where instead of using a oneback function, you just mark the final room that is invalid as an X in a 2D array. That room will be unavailable the next time.
+
+get starting room
+make path
+
+check if first door in room is valid, and not a dead end
+check if the door is opposite the last door. If not, add the door to the path. Repeat the process

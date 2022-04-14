@@ -28,50 +28,10 @@ char opposite (char c) {
     return 'E';
 }
 
-/*
-bool doorUsed(int pathCount, vector<Path> vPath, Door currentDoor) {
-    char rooms[1000][1000];
-    for(int i = 0; i < 1000; i++) 
-        for(int j = 0; j < 1000; j++) 
-            rooms[i][j] = '_';
-    
-    int row = 500, collumn = 500;
-    for (int j = 0; j < pathCount; j++) { 
-        for(int i = 0; i < (int)toStr(vPath[j]).length(); i++) {
-            if (toStr(vPath[j])[i] == 'E'){
-                collumn++;
-                rooms[row][collumn] = 'X';
-            } else if (toStr(vPath[j])[i] == 'N'){
-                row++;
-                rooms[row][collumn] = 'X';
-            } else if (toStr(vPath[j])[i] == 'W'){
-                collumn--;
-                rooms[row][collumn] = 'X';
-            } else {
-                row--;
-                rooms[row][collumn] = 'X';
-            }
-        }
-    }
-    if(doorChar(currentDoor) == 'E' && rooms[row][collumn+1] == 'X'){
-        return true;
-    }else if(doorChar(currentDoor) == 'N' && rooms[row+1][collumn] == 'X'){
-        return true;
-    }else if(doorChar(currentDoor) == 'W' && rooms[row][collumn-1] == 'X'){
-        return true;
-    }else if(doorChar(currentDoor) == 'S' && rooms[row-1][collumn] == 'X') {
-        return true;
-    }
-    vPath[pathCount].add(currentDoor);
-    for(int i = 0; i < pathCount - 1; i++) {
-        if (toStr(vPath[i]) == toStr(vPath[pathCount]))
-            return true;
-    }
-    return false;
-}
-*/
 
 bool checkDeadEnd(string path, char door, bool deadEnd[][1000]) {
+    if (path == "")
+        return false;
     int row = 500, collumn = 500;
     path += door;
     for(int i = 0; i < (int)path.length(); i++) {
@@ -106,7 +66,7 @@ int main() {
     bool deadEnd[1000][1000];
     int row = 500, collumn = 500;
     for(;;) {
-        if(doorsTried[doorsDeep] >= 5) {
+        if(doorsTried[doorsDeep] >= 7) {
             doorsTried[doorsDeep] = 0;
             string pathString = toStr(vPath[pathCount]);
             for (int i = 0; i < (int)pathString.length(); i++) {
@@ -131,33 +91,28 @@ int main() {
             collumn = 500;
 
         }
-        if(currentRoom->isValidDoor(currentDoor)) {
+        if(currentRoom->isValidDoor(currentDoor) && !(checkDeadEnd(toStr(vPath[pathCount]), doorChar(currentDoor), deadEnd))) {
             doorsTried[doorsDeep]++;
-            if (checkDeadEnd(toStr(vPath[pathCount]), doorChar(currentDoor), deadEnd)){
-                currentDoor = currentRoom->getNextDoor(currentDoor);
-                continue;
-            }
             if(doorsDeep > 0) {
                 if(doorChar(currentDoor) == opposite(toStr(vPath[pathCount])[doorsDeep-1])) {
                     currentDoor = currentRoom->getNextDoor(currentDoor);
                     continue;
                 }
             } 
-            Path hold = vPath[pathCount];
-            vPath[pathCount].add(currentDoor);
-            if(toStr(hold) == toStr(vPath[pathCount])) {
-                doorsTried[doorsDeep] += 5;
-                continue;
+            if(vPath[pathCount].add(currentDoor)){
+                doorsTried.push_back(0);
+                doorsDeep++;
+                *currentRoom = game.getRoom(vPath[pathCount]);
+                if(currentRoom->isExit()) {
+                    break;
+                }
+                firstDoor = currentRoom->getFirstDoor();
+                currentDoor = firstDoor;
+                doorsTried[doorsDeep] = 0;
+            }else{
+                currentDoor = currentRoom->getNextDoor(currentDoor);
+                doorsTried[doorsDeep]++;
             }
-            doorsTried.push_back(0);
-            doorsDeep++;
-            *currentRoom = game.getRoom(vPath[pathCount]);
-            if(currentRoom->isExit()) {
-                break;
-            }
-            firstDoor = currentRoom->getFirstDoor();
-            currentDoor = firstDoor;
-            doorsTried[doorsDeep] = 0;
             
 
         }else{
