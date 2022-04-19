@@ -4,6 +4,7 @@
 #include "adventure.h"
 using namespace std;
 
+
 string toStr(Path path) {
     stringstream ss;
     ss << path;
@@ -57,8 +58,7 @@ int main() {
 
     Room startingRoom = game.getRoom(vPath[0]);
     Room *currentRoom = &startingRoom;
-    Door firstDoor = currentRoom->getFirstDoor();
-    Door currentDoor = firstDoor;
+    Door currentDoor = currentRoom->getFirstDoor();
 
     int pathCount = 0, doorsDeep = 0;
     vector<int> doorsTried{0};
@@ -85,8 +85,7 @@ int main() {
             pathCount++;
             doorsDeep = 0;
             *currentRoom = game.getRoom(vPath[pathCount]);
-            firstDoor = currentRoom->getFirstDoor();
-            currentDoor = firstDoor;
+            currentDoor = currentRoom->getFirstDoor();
             row = 500;
             collumn = 500;
 
@@ -106,8 +105,7 @@ int main() {
                 if(currentRoom->isExit()) {
                     break;
                 }
-                firstDoor = currentRoom->getFirstDoor();
-                currentDoor = firstDoor;
+                currentDoor = currentRoom->getFirstDoor();
                 doorsTried[doorsDeep] = 0;
             }else{
                 currentDoor = currentRoom->getNextDoor(currentDoor);
